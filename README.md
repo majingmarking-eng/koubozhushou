@@ -28,6 +28,20 @@ ASR_ENV_PATH="/absolute/path/to/backend/.env" node server.mjs
 
 也可以直接打开 `index.html` 使用稿件编辑和本机录音功能，但正式 ASR 需要启动 `server.mjs` 或在设置页配置一个可访问的 ASR 服务地址。
 
+## 免费部署（Render）
+
+项目提供了 [`render.yaml`](render.yaml)，推荐使用 Render 的 Free Web Service 部署。Render 支持 Node.js Web Service、环境变量和 HTTPS；免费实例会在一段时间无请求后休眠，首次访问可能需要等待冷启动。
+
+1. 将本仓库推送到 GitHub。
+2. 登录 [Render](https://render.com)，选择 **New → Blueprint**。
+3. 连接 `majingmarking-eng/koubozhushou` 仓库并选择 `render.yaml`。
+4. 创建服务时填写 `VOLCENGINE_API_KEY` 和 `VOLCENGINE_RESOURCE_ID`。
+5. 部署完成后打开 Render 提供的 `https://你的服务名.onrender.com` 地址。
+
+线上前端和 ASR 代理由同一个 Node 服务提供，默认使用 `/api/asr`，不需要每位用户再次配置。API Key 只填写在 Render 的 Environment Variables 中，不要提交到 GitHub。
+
+如果不使用 Blueprint，也可以手动创建 Render Web Service：Build Command 留空，Start Command 填 `node server.mjs`，并在 Environment Variables 中设置上述两个变量。
+
 ## ASR 配置
 
 页面右上角的齿轮按钮可以配置 ASR 服务地址。接口约定：
@@ -46,6 +60,10 @@ ASR_ENV_PATH="/absolute/path/to/backend/.env" node server.mjs
 ## 技术栈
 
 原生 HTML、CSS、JavaScript、MediaRecorder、IndexedDB、Web Speech API，以及 Node.js 原生 HTTP 服务。
+
+## 部署限制
+
+Render Free 适合演示、测试和个人项目，不建议直接用于高并发生产环境。免费 Web Service 会休眠，且不提供持久化磁盘；本项目的稿件和录音仍保存在每位用户的浏览器本地，ASR 服务只处理用户当前提交的音频。
 
 ## 开源协议
 
