@@ -11,49 +11,19 @@
 - 可选择本机文件夹，将 WebM 录音导出保存
 - 正式口播时逐句播放提示音
 - 语音命令：`下一句`、`重播`、`上一句`
-- 可配置 ASR 服务地址
-- 本地 ASR 代理从服务端环境变量读取火山引擎凭证
+- 使用浏览器 Web Speech API 识别语音命令，不需要 API Key
 
 ## 快速开始
 
 在线体验：<https://majingmarking-eng.github.io/koubozhushou/>（GitHub Pages）。
 
-需要 Node.js 18+。
+直接打开在线版本即可使用：<https://majingmarking-eng.github.io/koubozhushou/>。
 
-```bash
-cp .env.example .env.local
-# 编辑 .env.local，填写 ASR_ENV_PATH
-ASR_ENV_PATH="/absolute/path/to/backend/.env" node server.mjs
-```
+也可以使用本地静态服务器打开项目。语音命令依赖浏览器 Web Speech API，不需要配置 API Key 或豆包 ASR。
 
-打开 <http://127.0.0.1:4173>。
+## 语音命令与浏览器支持
 
-也可以直接打开 `index.html` 使用稿件编辑和本机录音功能，但正式 ASR 需要启动 `server.mjs` 或在设置页配置一个可访问的 ASR 服务地址。
-
-## 免费部署（Render）
-
-项目提供了 [`render.yaml`](render.yaml)，推荐使用 Render 的 Free Web Service 部署。Render 支持 Node.js Web Service、环境变量和 HTTPS；免费实例会在一段时间无请求后休眠，首次访问可能需要等待冷启动。
-
-1. 将本仓库推送到 GitHub。
-2. 登录 [Render](https://render.com)，选择 **New → Blueprint**。
-3. 连接 `majingmarking-eng/koubozhushou` 仓库并选择 `render.yaml`。
-4. 创建服务时填写 `VOLCENGINE_API_KEY` 和 `VOLCENGINE_RESOURCE_ID`。
-5. 部署完成后打开 Render 提供的 `https://你的服务名.onrender.com` 地址。
-
-线上前端和 ASR 代理由同一个 Node 服务提供，默认使用 `/api/asr`，不需要每位用户再次配置。API Key 只填写在 Render 的 Environment Variables 中，不要提交到 GitHub。
-
-如果不使用 Blueprint，也可以手动创建 Render Web Service：Build Command 留空，Start Command 填 `node server.mjs`，并在 Environment Variables 中设置上述两个变量。
-
-## ASR 配置
-
-页面右上角的齿轮按钮可以配置 ASR 服务地址。接口约定：
-
-- `POST /api/asr`
-- 请求体为音频二进制数据
-- 服务端负责保存密钥并调用 ASR 提供商
-- 跨域部署时需要允许网站来源的 CORS 请求
-
-不要把 API Key 写进前端、提交到 Git 或放进公开仓库。`.env.example` 只包含路径示例，不包含密钥。
+正式口播时点击一次“开始口播”解锁手机音频。提示音播放结束后，浏览器开始监听：`下一句`、`重播`、`上一句`。Chrome/Edge 支持最好，Safari 支持取决于系统版本，Firefox 支持有限。建议使用 HTTPS 或 `localhost`，不要直接依赖 `file://`。
 
 ## 存储说明
 
@@ -61,11 +31,7 @@ ASR_ENV_PATH="/absolute/path/to/backend/.env" node server.mjs
 
 ## 技术栈
 
-原生 HTML、CSS、JavaScript、MediaRecorder、IndexedDB、Web Speech API，以及 Node.js 原生 HTTP 服务。
-
-## 部署限制
-
-Render Free 适合演示、测试和个人项目，不建议直接用于高并发生产环境。免费 Web Service 会休眠，且不提供持久化磁盘；本项目的稿件和录音仍保存在每位用户的浏览器本地，ASR 服务只处理用户当前提交的音频。
+原生 HTML、CSS、JavaScript、MediaRecorder、IndexedDB 和 Web Speech API。
 
 ## 开源协议
 
