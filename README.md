@@ -16,6 +16,8 @@
 
 ## 快速开始
 
+在线体验：<https://majingmarking-eng.github.io/koubozhushou/>（GitHub Pages）。
+
 需要 Node.js 18+。
 
 ```bash
